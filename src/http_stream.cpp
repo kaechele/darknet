@@ -243,9 +243,10 @@ public:
                     "Cache-Control: no-cache, private\r\n"
                     "Pragma: no-cache\r\n"
                     "Content-Type: application/json\r\n"
+                    "Access-Control-Allow-Origin: *\r\n"
                     //"Content-Type: multipart/x-mixed-replace; boundary=boundary\r\n"
                     "\r\n", 0);
-                _write(client, "[\n", 0);   // open JSON array
+                //_write(client, "[\n", 0);   // open JSON array
                 int n = _write(client, outputbuf, outlen);
                 cerr << "JSON_sender: new client " << client << endl;
             }
@@ -258,7 +259,7 @@ public:
                 //sprintf(head, "\r\nContent-Length: %zu\r\n\r\n", outlen);
                 //sprintf(head, "--boundary\r\nContent-Type: application/json\r\nContent-Length: %zu\r\n\r\n", outlen);
                 //_write(s, head, 0);
-                if (!close_all_sockets) _write(s, ", \n", 0);
+                // if (!close_all_sockets) _write(s, ", \n", 0);
                 int n = _write(s, outputbuf, outlen);
                 if (n < (int)outlen)
                 {
@@ -270,14 +271,14 @@ public:
 
                 if (close_all_sockets) {
                     int result = close_socket(s);
-                    cerr << "JSON_sender: close clinet: " << result << " \n";
+                    cerr << "JSON_sender: close clinet: " << result << "\n";
                     continue;
                 }
             }
         }
         if (close_all_sockets) {
             int result = close_socket(sock);
-            cerr << "JSON_sender: close acceptor: " << result << " \n\n";
+            cerr << "JSON_sender: close acceptor: " << result << "\n\n";
         }
         return true;
         }

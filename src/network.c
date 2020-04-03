@@ -919,10 +919,10 @@ char *detection_to_json(detection *dets, int nboxes, int classes, char **names, 
     char *send_buf = (char *)calloc(1024, sizeof(char));
     if (!send_buf) return 0;
     if (filename) {
-        sprintf(send_buf, "{\n \"frame_id\":%lld, \n \"filename\":\"%s\", \n \"objects\": [ \n", frame_id, filename);
+        sprintf(send_buf, "{\"frame_id\":%lld, \"filename\":\"%s\", \"objects\": [", frame_id, filename);
     }
     else {
-        sprintf(send_buf, "{\n \"frame_id\":%lld, \n \"objects\": [ \n", frame_id);
+        sprintf(send_buf, "{\"frame_id\":%lld, \"objects\": [", frame_id);
     }
 
     int i, j;
@@ -932,14 +932,14 @@ char *detection_to_json(detection *dets, int nboxes, int classes, char **names, 
             int show = strncmp(names[j], "dont_show", 9);
             if (dets[i].prob[j] > thresh && show)
             {
-                if (class_id != -1) strcat(send_buf, ", \n");
+                if (class_id != -1) strcat(send_buf, ", ");
                 class_id = j;
                 char *buf = (char *)calloc(2048, sizeof(char));
                 if (!buf) return 0;
                 //sprintf(buf, "{\"image_id\":%d, \"category_id\":%d, \"bbox\":[%f, %f, %f, %f], \"score\":%f}",
                 //    image_id, j, dets[i].bbox.x, dets[i].bbox.y, dets[i].bbox.w, dets[i].bbox.h, dets[i].prob[j]);
 
-                sprintf(buf, "  {\"class_id\":%d, \"name\":\"%s\", \"relative_coordinates\":{\"center_x\":%f, \"center_y\":%f, \"width\":%f, \"height\":%f}, \"confidence\":%f}",
+                sprintf(buf, " {\"class_id\":%d, \"name\":\"%s\", \"relative_coordinates\":{\"center_x\":%f, \"center_y\":%f, \"width\":%f, \"height\":%f}, \"confidence\":%f} ",
                     j, names[j], dets[i].bbox.x, dets[i].bbox.y, dets[i].bbox.w, dets[i].bbox.h, dets[i].prob[j]);
 
                 int send_buf_len = strlen(send_buf);
@@ -955,7 +955,7 @@ char *detection_to_json(detection *dets, int nboxes, int classes, char **names, 
             }
         }
     }
-    strcat(send_buf, "\n ] \n}");
+    strcat(send_buf, "] }\n");
     return send_buf;
 }
 
